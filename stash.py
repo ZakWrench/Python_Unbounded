@@ -11,16 +11,17 @@ import urllib.parse
 import sys
 
 
+stop_download = False
+
+
 def mp3(link):
+    global stop_download
     try:
         yt = YouTube(link)
         video_title = yt.title
 
-        # Check if the title has any characters that aren't allowed in filenames
-        # and replace them with an underscore
         filename = re.sub(r'[^\w\-_\. ]', '_', video_title)
 
-        # Download and convert the video
         ydl_opts = {
             'format': 'bestaudio/best',
             'outtmpl': filename + '.%(ext)s',
@@ -33,19 +34,56 @@ def mp3(link):
         }
 
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            while not stop_download:
+                ydl.download([link])
+                time.sleep(0.5)
+    except Exception as e:
+        tkinter.messagebox.showerror("Error", str(e))
+
+
+def stop_download_func():
+    global stop_download
+    stop_download = True
+
+
+def mp4(link):
+    try:
+        yt = YouTube(link)
+        video_title = yt.title
+
+        filename = re.sub(r'[^\w\-_\. ]', '_', video_title)
+
+        ydl_opts = {
+            'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]',
+            'outtmpl': filename + '.%(ext)s',
+            'threads': 4
+        }
+
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             ydl.download([link])
     except Exception as e:
         tkinter.messagebox.showerror("Error", str(e))
 
 
 def start_download():
+    global stop_download
+    stop_download = False
+
     link = link_entry.get()
     parsed_link = urllib.parse.urlparse(link)
     if parsed_link.scheme == "":
         link = "https://www.youtube.com/watch?v=" + parsed_link.path.strip("/")
-    elif not parsed_link.netloc == "youtube.com" or not parsed_link.path.startswith("/watch"):
+        mp3(link)
+        return
+    elif not (parsed_link.netloc == "youtube.com" or parsed_link.netloc == "www.youtube.com") or not (parsed_link.path.startswith("/watch") or parsed_link.path.startswith("/watch?v=")):
         tkinter.messagebox.showerror("Error", "Invalid YouTube link")
         return
+    params = urllib.parse.parse_qs(parsed_link.query)
+    if 'v' not in params:
+        tkinter.messagebox.showerror("Error", "Invalid YouTube link")
+        return
+    video_id = params['v'][0]
+    link = f"https://www.youtube.com/watch?v={video_id}"
     mp3(link)
 
 #
@@ -127,7 +165,9 @@ link_entry.grid(row=1, column=1)
 
 download_button = tk.Button(root, text="Download", command=start_download)
 download_button.grid(row=1, column=2, pady=10)
-
+stop_download_button = tk.Button(
+    root, text="Stop Download", command=stop_download_func)
+stop_download_button.grid(row=1, column=3)
 
 hidden_files_button = tk.Button(
     root, text="Show Hidden Files", command=toggle_hidden_files)
@@ -149,5 +189,6 @@ game_button = tk.Button(root, text="Dark Souls 3", command=launch_ds3)
 game_button.grid(row=3, column=1, pady=10)
 ds3_label = tk.Label(root, text="---> ")
 ds3_label.grid(row=3, column=0)
+
 
 root.mainloop()
