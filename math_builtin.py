@@ -1,7 +1,9 @@
-import math  # importing math module
+import math 
 
-x = -2.5  # define variable x as -2.5
-print(abs(x))  # print the absolute value of x which is 2.5
+x = -2.5 
+
+# print the absolute value of x which is 2.5
+print(abs(x))  
 # print the tuple containing quotient and remainder of 10 divided by 3, which is (3, 1)
 print(divmod(10, 3))
 # print the float representation of the string "3.14" which is 3.14
@@ -10,11 +12,16 @@ print(float("3.14"))
 print(hex(255))
 # print the integer representation of the string "123" which is 123
 print(int("123"))
-print(max(1, 2, 3))  # print the maximum number among 1, 2 and 3, which is 3
-print(min(1, 2, 3))  # print the minimum number among 1, 2 and 3, which is 1
-print(oct(8))  # print the octal representation of the integer 8 which is 0o10
-print(pow(2, 3))  # print the result of 2 to the power of 3 which is 8
-print(round(3.14))  # print the rounded value of 3.14 which is 3
+# print the maximum number among 1, 2 and 3, which is 3
+print(max(1, 2, 3))
+# print the minimum number among 1, 2 and 3, which is 1
+print(min(1, 2, 3)) 
+# print the octal representation of the integer 8 which is 0o10
+print(oct(8)) 
+# print the result of 2 to the power of 3 which is 8
+print(pow(2, 3)) 
+# print the rounded value of 3.14 which is 3
+print(round(3.14)) 
 
 # math module functions
 print(math.acos(-1))  # print the arc cosine of -1 which is 3.141592653589793
