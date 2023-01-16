@@ -7,6 +7,7 @@
 
 #########################
 
+import copy
 from collections import Counter
 l1 = [1, 2, 3, 4, 5, 6]
 l2 = [7, 8, 9, 10]
@@ -29,6 +30,12 @@ l4 += l3
 l4 *= 2
 l4 = (l3 * 1) + (l4 + [])
 l4.sort()
+l_deepcopy = copy.deepcopy(l1)
+l_deepcopy[0] = 1000
+print(l1)
+l_deepcopy = l1
+l_deepcopy[0] = 1000
+print(l1)
 
 
 def sort_lists(lst):
