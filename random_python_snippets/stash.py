@@ -233,14 +233,11 @@ game_button.grid(row=3, column=1, pady=10)
 ds3_label = tk.Label(root, text="---> ")
 ds3_label.grid(row=3, column=0)
 
-current_total_lines = ttk.Label(root, text="Total lines: ")
-current_total_lines.grid(row=4, column=0)
-root.after(1000, update_lines)
-
 """
 button = ttk.Button(root, text="Count Lines", command=on_button_click)
 button.grid(row=4, column=1)
 """
+root.after(1000, update_lines)
 lines_var = tk.StringVar()
 label = ttk.Label(root, textvariable=lines_var)
 label.grid(row=5, column=0)
