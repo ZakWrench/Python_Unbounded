@@ -6,10 +6,11 @@ import youtube_dl
 import re
 from pytube import YouTube
 import tkinter as tk
+from tkinter import ttk
 import tkinter.messagebox
 import urllib.parse
 import sys
-
+import os
 
 stop_download = False
 
@@ -149,6 +150,48 @@ def launch_ds3():
 
 
 ####
+
+# Total number of lines written.
+def count_lines(file_path):
+    lines = 0
+    multiline_comment = False
+    with open(file_path, "r") as f:
+        for line in f:
+            if multiline_comment:
+                if line.strip().endswith("\"\"\"") or line.strip().endswith("\'\'\'"):
+                    multiline_comment = False
+            elif line.strip().startswith("\"\"\"") or line.strip().startswith("\'\'\'"):
+                multiline_comment = True
+            elif not line.startswith("#") and not multiline_comment and line.strip() != "":
+                lines += 1
+    return lines
+
+
+def total_lines():
+    directory = "C:\\Users\\Fatihi\\Desktop\\python\\Quick_Python"
+    lines = 0
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if file.endswith(".py"):
+                file_path = os.path.join(root, file)
+                lines += count_lines(file_path)
+    return lines
+
+
+def update_lines():
+    lines_var.set("Total lines: {}".format(total_lines()))
+    root.after(1000, update_lines)
+
+
+total_l = total_lines()
+
+"""
+def on_button_click():
+    total = total_lines()
+    current_total_lines.config(text="Total lines: {}".format(total))
+"""
+
+########
 root = tk.Tk()
 root.title("Zak's Stash")
 
@@ -190,5 +233,16 @@ game_button.grid(row=3, column=1, pady=10)
 ds3_label = tk.Label(root, text="---> ")
 ds3_label.grid(row=3, column=0)
 
+current_total_lines = ttk.Label(root, text="Total lines: ")
+current_total_lines.grid(row=4, column=0)
+root.after(1000, update_lines)
 
+"""
+button = ttk.Button(root, text="Count Lines", command=on_button_click)
+button.grid(row=4, column=1)
+"""
+lines_var = tk.StringVar()
+label = ttk.Label(root, textvariable=lines_var)
+label.grid(row=5, column=0)
+lines_var.set("Total lines: {}".format(total_lines()))
 root.mainloop()
