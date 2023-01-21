@@ -11,12 +11,16 @@ import tkinter.messagebox
 import urllib.parse
 import sys
 import os
+from tkinter import filedialog
+from docx import Document
+import threading
 
 stop_download = False
+download_thread = None
 
 
 def mp3(link):
-    global stop_download
+    global stop_download, download_thread
     try:
         yt = YouTube(link)
         video_title = yt.title
@@ -35,9 +39,10 @@ def mp3(link):
         }
 
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-            while not stop_download:
-                ydl.download([link])
-                time.sleep(0.5)
+            download_thread = threading.Thread(
+                target=ydl.download, args=([link],))
+            download_thread.start()
+            download_thread.join()
     except Exception as e:
         tkinter.messagebox.showerror("Error", str(e))
 
@@ -45,6 +50,7 @@ def mp3(link):
 def stop_download_func():
     global stop_download
     stop_download = True
+    download_thread.join()
 
 
 def mp4(link):
@@ -190,6 +196,32 @@ def on_button_click():
     total = total_lines()
     current_total_lines.config(text="Total lines: {}".format(total))
 """
+#####
+
+
+def browse():
+    text_file = filedialog.askopenfilename(filetypes=[("Text files", "*.txt")])
+    docx_file = text_file.replace('.txt', '.docx')
+
+    txt_docx_browse_button.config(state='disable')
+    txt_docx_progressbar.start()
+
+    thread = threading.Thread(target=convert, args=(text_file, docx_file))
+    thread.start()
+
+
+def convert(text_file, docx_file):
+    with open(text_file, 'r', encoding='utf-8') as f:
+        text = f.read()
+
+    doc = Document()
+    doc.add_paragraph(text)
+    doc.save(docx_file)
+
+    txt_docx_progressbar.stop()
+    txt_docx_progressbar.pack_forget()
+    txt_docx_browse_button.config(state='normal')
+
 
 ########
 root = tk.Tk()
@@ -232,7 +264,6 @@ game_button = tk.Button(root, text="Dark Souls 3", command=launch_ds3)
 game_button.grid(row=3, column=1, pady=10)
 ds3_label = tk.Label(root, text="---> ")
 ds3_label.grid(row=3, column=0)
-
 """
 button = ttk.Button(root, text="Count Lines", command=on_button_click)
 button.grid(row=4, column=1)
@@ -242,4 +273,15 @@ lines_var = tk.StringVar()
 label = ttk.Label(root, textvariable=lines_var)
 label.grid(row=5, column=0)
 lines_var.set("Total lines: {}".format(total_lines()))
+
+
+txt_docx = tk.Label(root, text="Convert text to docx")
+txt_docx.grid(row=6, column=0)
+
+txt_docx_browse_button = tk.Button(root, text="Browse", command=browse)
+txt_docx_browse_button.grid(row=6, column=1)
+txt_docx_progressbar = ttk.Progressbar(
+    root, orient="horizontal", length=100, mode="determinate")
+txt_docx_progressbar.grid(row=6, column=2)
+
 root.mainloop()
