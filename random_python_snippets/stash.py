@@ -14,6 +14,7 @@ import os
 from tkinter import filedialog
 from docx import Document
 import threading
+from PIL import Image
 
 stop_download = False
 download_thread = None
@@ -222,6 +223,42 @@ def convert(text_file, docx_file):
     txt_docx_progressbar.pack_forget()
     txt_docx_browse_button.config(state='normal')
 
+######
+
+
+def scale_image(im, percent):
+    # Get the original size of the image
+    width, height = im.size
+
+    # Calculate the new size of the image
+    new_width = int(width * percent)
+    new_height = int(height * percent)
+
+    # Resize the image
+    im = im.resize((new_width, new_height), Image.ANTIALIAS)
+
+    return im
+
+
+def browse_file():
+    filepath = filedialog.askopenfilename()
+    im = Image.open(filepath)
+    return im, filepath
+
+
+def save_image(im, filepath):
+    filename = filepath.split("/")[-1]
+    im.save(f"{filename.split('.')[0]}_scaled.{filename.split('.')[1]}")
+
+
+def scale_percentage():
+    global filepath
+    filepath = filedialog.askopenfilename()
+    im = Image.open(filepath)
+    scale = float(scale_entry.get())
+    im = scale_image(im, scale/100)
+    save_image(im, filepath)
+
 
 ########
 root = tk.Tk()
@@ -283,5 +320,21 @@ txt_docx_browse_button.grid(row=6, column=1)
 txt_docx_progressbar = ttk.Progressbar(
     root, orient="horizontal", length=100, mode="determinate")
 txt_docx_progressbar.grid(row=6, column=2)
+
+
+scale_label = tk.Label(root, text="Scale Image Down (0-100 percent):")
+scale_label.grid(row=7, column=0)
+
+scale_entry = tk.Entry(root)
+scale_entry.insert(0, 50)
+scale_entry.grid(row=7, column=1)
+
+browse_button = tk.Button(root, text="Browse", command=browse_file)
+browse_button.grid(row=7, column=2)
+browse_button.grid_forget()
+
+scale_button = tk.Button(root, text="Scale Down", command=scale_percentage)
+scale_button.grid(row=7, column=2)
+
 
 root.mainloop()
