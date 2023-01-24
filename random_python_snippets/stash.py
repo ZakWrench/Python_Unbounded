@@ -258,9 +258,54 @@ def scale_percentage():
     scale = float(scale_entry.get())
     im = scale_image(im, scale/100)
     save_image(im, filepath)
-
-
 ########
+
+
+def create_todo_list():
+    todo_list_window = tk.Toplevel(root)
+    todo_list_window.title("To Do List")
+
+    tasks = []
+    task_entry = []  # Make task_entry a list
+
+    def add_entry():
+        new_entry = ttk.Entry(todo_list_window)
+        new_entry.grid(row=len(task_entry), column=0,
+                       padx=5, pady=5, sticky="W")
+        task_entry.append(new_entry)  # Append new entry to task_entry list
+
+    add_entry_button = ttk.Button(
+        todo_list_window, text="Add Entry", command=add_entry)
+    add_entry_button.grid(row=0, column=2, padx=5, pady=5)
+    add_entry()  # Initialize the first entry
+
+    def add_task():
+        # Get text from the last entry in the task_entry list
+        task = task_entry[-1].get()
+        tasks.append(task)
+        task_var = tk.StringVar()
+        task_var.set(task)
+        task_label = ttk.Label(todo_list_window, textvariable=task_var)
+        task_label.grid(row=len(tasks), column=0, padx=5, pady=5, sticky="W")
+
+        task_done = tk.IntVar()
+        task_check = ttk.Checkbutton(
+            todo_list_window, variable=task_done, onvalue=1, offvalue=0)
+        task_check.grid(row=len(tasks), column=1, padx=5, pady=5)
+        task_check.set(0)
+
+        delete_task_button = ttk.Button(
+            todo_list_window, text="Delete Task", command=delete_task)
+        delete_task_button.grid(row=len(tasks), column=2, padx=5, pady=5)
+
+        def delete_task():
+            tasks.remove(task)
+            task_label.destroy()
+            task_check.destroy()
+            delete_task_button.destroy()
+
+
+#########
 root = tk.Tk()
 root.title("Zak's Stash")
 
@@ -335,6 +380,9 @@ browse_button.grid_forget()
 
 scale_button = tk.Button(root, text="Scale Down", command=scale_percentage)
 scale_button.grid(row=7, column=2)
+
+todo_button = tk.Button(root, text="To Do List", command=create_todo_list)
+todo_button.grid(row=8, column=0)
 
 
 root.mainloop()
