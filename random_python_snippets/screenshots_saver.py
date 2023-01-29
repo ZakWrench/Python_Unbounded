@@ -7,7 +7,7 @@ import win32api
 import win32con
 
 width1, height1 = win32api.GetSystemMetrics(0), win32api.GetSystemMetrics(1)
-width2, height2 = win32api.GetSystemMetrics(80), win32api.GetSystemMetrics(81)
+width2, height2 = win32api.GetSystemMetrics(78), win32api.GetSystemMetrics(79)
 #cursor_width = win32api.GetSystemMetrics(13)
 #keydown = win32api.GetSystemMetrics(win32con.WM_KEYDOWN)
 print(
@@ -33,7 +33,7 @@ def take_screenshot():
     screenshot_2_path = screenshot_folder + current_date + '-' + current_time + \
         '-screenshot_0' + str(counter) + '_b' + '.png'
     img.save(screenshot_path)
-    img_2.save(screenshot_2_path)
+    #img_2.save(screenshot_2_path)
     counter += 1
     max_screenshots -= 1
     print(f'Screenshot saved to {screenshot_path}')
