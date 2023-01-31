@@ -10,20 +10,23 @@
 import copy
 from collections import Counter
 l1 = [1, 2, 3, 4, 5, 6]
-l2 = [7, 8, 9, 10]
+l2 = [7, 8, 9, 10, 8, 10]
 l3 = [23, 221, 120]
 
-l1.append(7)
-l2.reverse()
-l2.remove(10)
-l2.insert(0, 100)
-del l1[:-4]
-l1.append(l2)
-l1.extend([8, 9, 10])
-l1.append(l3)
-l1.pop(0)
-l1.index(8)
-l1.count(7)
+l1.append(7) #[..,6,7]
+l2.reverse() #[10,9..]
+l2.remove(10) #[7, 8, 9, 8, 10]
+# now if only this was possible:
+#l2_remove = l2.remove(10)
+#l2_remove _ = l2_remove * 2
+l2.insert(0, 100) #[100, 7, ...]
+del l1[:-4] #[4, 5, 6, 7]
+l1.append(l2) #[4, 5, 6, 7, [100, 10, 8, 9, 8, 7]]
+l1.extend([8, 9, 10]) #[4, 5, 6, 7, [100, 10, 8, 9, 8, 7],8, 9, 10]
+l1.append(l3) 
+l1.pop(0) #[5, 6, 7, [100, 10, 8, 9, 8, 7],8, 9, 10]
+l1.index(8) # 4
+l1.count(7) # 1
 l4 = l1.copy()
 l4.clear()
 l4 += l3
