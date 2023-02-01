@@ -7,8 +7,7 @@ import win32api
 import win32con
 
 # The code is a script that takes screenshots of the desktop and saves them to a specified folder.
-# The screenshots are taken in two parts: the entire desktop and a portion of it. It uses the PIL library
-# to capture the screenshots, and the `ctypes` library to display a message box after each screenshot is taken.
+# It uses the PIL library to capture the screenshots, and the `ctypes` library to display a message box after each screenshot is taken.
 # The `datetime` and `time` libraries are used to keep track of the date and time for naming the screenshots.
 # The `win32api` and `win32con` libraries are used to get the dimensions of the desktop and portion of the screen.
 #  The `random` library is used to provide random sleep times between taking each screenshot.
