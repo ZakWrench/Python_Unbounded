@@ -96,7 +96,7 @@ for i in selection_sort_generator(xyz):
 def quicksort(arr):
     if len(arr) <= 1:
         return arr
-    pivot = arr[len(arr) // 2]
+    pivot = random.choice(arr)
     left = [x for x in arr if x < pivot]
     middle = [x for x in arr if x == pivot]
     right = [x for x in arr if x > pivot]
@@ -187,12 +187,17 @@ def counting_sort(arr, exp):  # ([4, 10, 6, 2],1)
 
 
 def bucket_sort(arr):
-    buckets = [[] for _ in range(len(arr))]  # [[],[],[],[]]
+    num_buckets = int(np.sqrt(len(arr)))
+    buckets = [[] for _ in range(num_buckets)]  # [[],[],[],[]]
+    
+    max_val, min_val = max(arr), min(arr)
+    range_val = max_val - min_val
+    
     for val in arr:
-        bucket_index = int(val*len(arr))  # 0,1,2,3
-        buckets[bucket_index].append(val)  # [[4],[10],[6],[2]]
+        bucket_index = int(((val - min_val) / range_val) * (num_buckets - 1))
+        buckets[bucket_index].append(val)
     for bucket in buckets:
-        bucket.sort()  # [[4],[6,10],[2]]
+        bucket.sort() 
     return [val for bucket in buckets for val in bucket]  # [4,6,10,2]
 
 
